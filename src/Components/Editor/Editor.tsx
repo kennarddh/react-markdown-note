@@ -24,6 +24,8 @@ import {
 } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
 
+import useData from 'Components/Hooks/useData'
+
 import { Container } from './Styles'
 
 const reactJSSandpackSnippetContent = `
@@ -54,13 +56,14 @@ const sandpackConfig: SandpackConfig = {
 	],
 }
 
-const markdown = '# Hello world'
-
 const Editor: FC = () => {
+	const { CurrentMarkdown, MDXEditorRef } = useData()
+
 	return (
 		<Container>
 			<MDXEditor
-				markdown={markdown}
+				markdown={CurrentMarkdown}
+				ref={MDXEditorRef}
 				suppressHtmlProcessing
 				plugins={[
 					toolbarPlugin({
@@ -86,7 +89,7 @@ const Editor: FC = () => {
 							txt: 'Text',
 							json: 'JSON',
 							log: 'Log',
-							jsx: 'TypeScript XML',
+							jsx: 'JavaScript XML',
 							tsx: 'TypeScript XML',
 						},
 					}),
@@ -95,7 +98,7 @@ const Editor: FC = () => {
 					}),
 					diffSourcePlugin({
 						viewMode: 'rich-text',
-						diffMarkdown: markdown,
+						diffMarkdown: CurrentMarkdown,
 					}),
 					markdownShortcutPlugin(),
 				]}
