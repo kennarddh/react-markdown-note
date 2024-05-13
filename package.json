@@ -58,7 +58,7 @@
 		"vite-plugin-svgr": "^4.2.0"
 	},
 	"dependencies": {
-		"@mdxeditor/editor": "^2.20.5",
+		"@mdxeditor/editor": "^3.0.7",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"styled-components": "^6.1.8"
