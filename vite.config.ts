@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export const relativeAlias: Record<string, string> = {
+	Services: './src/Services',
 	Components: './src/Components',
 	Contexts: './src/Contexts',
 	Utils: './src/Utils',
