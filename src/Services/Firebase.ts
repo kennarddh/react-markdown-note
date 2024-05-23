@@ -2,14 +2,30 @@ import { Note } from 'Types/Types'
 import { FirebaseOptions, initializeApp } from 'firebase/app'
 import {
 	FirestoreDataConverter,
+	addDoc,
 	collection,
+	doc,
 	getDocs,
 	getFirestore,
+	updateDoc,
 } from 'firebase/firestore/lite'
 
 const notesConverter: FirestoreDataConverter<Note> = {
-	toFirestore: data => data,
-	fromFirestore: snapshot => snapshot.data() as Note,
+	toFirestore: data => {
+		// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+		const { id: _, ...rest } = data
+
+		return rest
+	},
+	fromFirestore: snapshot => {
+		const data = snapshot.data()
+
+		return {
+			id: snapshot.id,
+			name: data.name,
+			content: data.content,
+		}
+	},
 }
 
 const firebaseConfig: FirebaseOptions = {
@@ -25,16 +41,24 @@ export const FirebaseApp = initializeApp(firebaseConfig)
 
 export const Firestore = getFirestore(FirebaseApp)
 
-export const GetNotes = async () => {
-	const notesCollection = collection(Firestore, 'notes').withConverter(
-		notesConverter,
-	)
+export const NotesCollection = collection(Firestore, 'notes').withConverter(
+	notesConverter,
+)
 
-	const notesSnapshot = await getDocs(notesCollection)
+export const GetNotes = async (): Promise<Note[]> => {
+	const notesSnapshot = await getDocs(NotesCollection)
 
 	const notesList = notesSnapshot.docs.map(doc => doc.data())
 
 	return notesList
+}
+
+export const CreateNote = async (note: Omit<Note, 'id'>) => {
+	await addDoc(NotesCollection, note)
+}
+
+export const EditNote = async (id: string, note: Omit<Note, 'id'>) => {
+	await updateDoc(doc(NotesCollection, id), note)
 }
 
 export default FirebaseApp
