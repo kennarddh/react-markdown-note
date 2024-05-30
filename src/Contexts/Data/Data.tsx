@@ -62,6 +62,8 @@ export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
 
 		if (!result) return
 
+		MDXEditorRef.current?.setMarkdown(result.content)
+
 		SetCurrentMarkdown(result.content)
 		SetCurrentNoteID(result.id)
 		SetName(result.name)

@@ -1,12 +1,12 @@
 import { Note } from 'Types/Types'
 import { FirebaseOptions, initializeApp } from 'firebase/app'
-import { getDoc } from 'firebase/firestore'
 import {
 	FirestoreDataConverter,
 	addDoc,
 	collection,
 	deleteDoc,
 	doc,
+	getDoc,
 	getDocs,
 	getFirestore,
 	updateDoc,
