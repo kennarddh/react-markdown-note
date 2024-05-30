@@ -4,6 +4,7 @@ import {
 	FirestoreDataConverter,
 	addDoc,
 	collection,
+	deleteDoc,
 	doc,
 	getDocs,
 	getFirestore,
@@ -59,6 +60,10 @@ export const CreateNote = async (note: Omit<Note, 'id'>) => {
 
 export const EditNote = async (id: string, note: Omit<Note, 'id'>) => {
 	await updateDoc(doc(NotesCollection, id), note)
+}
+
+export const DeleteNote = async (id: string) => {
+	await deleteDoc(doc(NotesCollection, id))
 }
 
 export default FirebaseApp
