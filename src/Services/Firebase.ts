@@ -1,5 +1,6 @@
 import { Note } from 'Types/Types'
 import { FirebaseOptions, initializeApp } from 'firebase/app'
+import { getDoc } from 'firebase/firestore'
 import {
 	FirestoreDataConverter,
 	addDoc,
@@ -54,16 +55,32 @@ export const GetNotes = async (): Promise<Note[]> => {
 	return notesList
 }
 
+export const GetNoteByID = async (id: string): Promise<Note | null> => {
+	const result = await getDoc(doc(NotesCollection, id))
+
+	if (!result) return null
+
+	const data = result.data()
+
+	if (!data) return null
+
+	return {
+		id: data.id.toString(),
+		name: data.name.toString(),
+		content: data.content.toString(),
+	}
+}
+
 export const CreateNote = async (note: Omit<Note, 'id'>) => {
-	await addDoc(NotesCollection, note)
+	return await addDoc(NotesCollection, note)
 }
 
 export const EditNote = async (id: string, note: Omit<Note, 'id'>) => {
-	await updateDoc(doc(NotesCollection, id), note)
+	return await updateDoc(doc(NotesCollection, id), note)
 }
 
 export const DeleteNote = async (id: string) => {
-	await deleteDoc(doc(NotesCollection, id))
+	return await deleteDoc(doc(NotesCollection, id))
 }
 
 export default FirebaseApp

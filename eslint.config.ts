@@ -72,6 +72,7 @@ export default tsEslint.config(
 			'no-case-declarations': 'off',
 			'react/jsx-curly-brace-presence': 'warn',
 			'react/jsx-no-useless-fragment': 'warn',
+			'no-unused-vars': 'off',
 			'import/extensions': [
 				'error',
 				'ignorePackages',

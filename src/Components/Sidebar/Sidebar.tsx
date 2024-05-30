@@ -2,31 +2,47 @@ import { FC } from 'react'
 
 import useData from 'Components/Hooks/useData'
 
-import { Container } from './Styles'
+import { ButtonsContainer, Container, NotesContainer } from './Styles'
 
 const Sidebar: FC = () => {
-	const { CurrentMarkdown, SetCurrentMarkdown, MDXEditorRef } = useData()
+	const {
+		SetName,
+		SaveNote,
+		MDXEditorRef,
+		Notes,
+		RefreshNotes,
+		LoadNote,
+		Name,
+	} = useData()
 
 	return (
 		<Container>
-			<button
-				onClick={() => {
-					const markdown = MDXEditorRef.current?.getMarkdown()
+			<ButtonsContainer>
+				<button
+					onClick={() => {
+						const markdown = MDXEditorRef.current?.getMarkdown()
 
-					if (!markdown) return
+						if (!markdown) return
 
-					SetCurrentMarkdown(markdown)
-				}}
-			>
-				Save
-			</button>
-			<button
-				onClick={() => {
-					MDXEditorRef.current?.setMarkdown(CurrentMarkdown)
-				}}
-			>
-				Load
-			</button>
+						SaveNote(markdown)
+					}}
+				>
+					Save
+				</button>
+				<button onClick={() => RefreshNotes()}>Refresh</button>
+				<input
+					onChange={event => SetName(event.target.value)}
+					value={Name}
+					placeholder='Name'
+				/>
+			</ButtonsContainer>
+			<NotesContainer>
+				{Notes.map(note => (
+					<button key={note.id} onClick={() => LoadNote(note.id)}>
+						{note.name}
+					</button>
+				))}
+			</NotesContainer>
 		</Container>
 	)
 }
