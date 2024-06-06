@@ -1,4 +1,11 @@
-import { FC, useCallback, useEffect, useRef, useTransition } from 'react'
+import {
+	FC,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useTransition,
+} from 'react'
 
 import {
 	AdmonitionDirectiveDescriptor,
@@ -78,6 +85,47 @@ const Editor: FC = () => {
 		[SetCurrentContent],
 	)
 
+	const Plugins = useMemo(
+		() => [
+			toolbarPlugin({
+				toolbarContents: () => <KitchenSinkToolbar />,
+			}),
+			listsPlugin(),
+			quotePlugin(),
+			headingsPlugin(),
+			linkPlugin(),
+			linkDialogPlugin(),
+			imagePlugin(),
+			tablePlugin(),
+			thematicBreakPlugin(),
+			frontmatterPlugin(),
+			codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
+			sandpackPlugin({ sandpackConfig }),
+			codeMirrorPlugin({
+				codeBlockLanguages: {
+					js: 'JavaScript',
+					ts: 'TypeScript',
+					html: 'HTML',
+					css: 'CSS',
+					txt: 'Text',
+					json: 'JSON',
+					log: 'Log',
+					jsx: 'JavaScript XML',
+					tsx: 'TypeScript XML',
+				},
+			}),
+			directivesPlugin({
+				directiveDescriptors: [AdmonitionDirectiveDescriptor],
+			}),
+			diffSourcePlugin({
+				viewMode: 'rich-text',
+				diffMarkdown: SavedContent,
+			}),
+			markdownShortcutPlugin(),
+		],
+		[SavedContent],
+	)
+
 	return (
 		<Container>
 			<MDXEditor
@@ -85,43 +133,7 @@ const Editor: FC = () => {
 				onChange={UpdateCurrentContent}
 				ref={MDXEditorRef}
 				suppressHtmlProcessing
-				plugins={[
-					toolbarPlugin({
-						toolbarContents: () => <KitchenSinkToolbar />,
-					}),
-					listsPlugin(),
-					quotePlugin(),
-					headingsPlugin(),
-					linkPlugin(),
-					linkDialogPlugin(),
-					imagePlugin(),
-					tablePlugin(),
-					thematicBreakPlugin(),
-					frontmatterPlugin(),
-					codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
-					sandpackPlugin({ sandpackConfig }),
-					codeMirrorPlugin({
-						codeBlockLanguages: {
-							js: 'JavaScript',
-							ts: 'TypeScript',
-							html: 'HTML',
-							css: 'CSS',
-							txt: 'Text',
-							json: 'JSON',
-							log: 'Log',
-							jsx: 'JavaScript XML',
-							tsx: 'TypeScript XML',
-						},
-					}),
-					directivesPlugin({
-						directiveDescriptors: [AdmonitionDirectiveDescriptor],
-					}),
-					diffSourcePlugin({
-						viewMode: 'rich-text',
-						diffMarkdown: SavedContent,
-					}),
-					markdownShortcutPlugin(),
-				]}
+				plugins={Plugins}
 			/>
 		</Container>
 	)
