@@ -60,8 +60,6 @@ const sandpackConfig: SandpackConfig = {
 const Editor: FC = () => {
 	const { SetCurrentContent, SavedContent, CurrentContent } = useData()
 
-	console.log({ SavedContent })
-
 	const MDXEditorRef = useRef<MDXEditorMethods>(null)
 
 	useEffect(() => {

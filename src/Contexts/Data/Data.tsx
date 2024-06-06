@@ -28,6 +28,10 @@ export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
 		SetCurrentNoteID(result.id)
 	}, [Name, SavedContent])
 
+	const RefreshNotes = useCallback(async () => {
+		SetNotes(await GetNotes())
+	}, [])
+
 	const SaveNote = useCallback(async () => {
 		if (Name === '') return alert('Name must not be empty.')
 
@@ -41,6 +45,8 @@ export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
 
 			SetCurrentNoteID(result.id)
 
+			RefreshNotes()
+
 			return
 		}
 
@@ -48,11 +54,7 @@ export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
 			name: Name,
 			content: CurrentContent,
 		})
-	}, [CurrentContent, CurrentNoteID, Name])
-
-	const RefreshNotes = useCallback(async () => {
-		SetNotes(await GetNotes())
-	}, [])
+	}, [CurrentContent, CurrentNoteID, Name, RefreshNotes])
 
 	const LoadNote = useCallback(async (id: string) => {
 		const result = await GetNoteByID(id)
@@ -66,7 +68,6 @@ export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
 	}, [])
 
 	const NewNote = useCallback(() => {
-		console.log('New Note')
 		SetSavedContent('# Hello World')
 		SetCurrentContent('# Hello World')
 		SetCurrentNoteID(null)
