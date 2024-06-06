@@ -5,30 +5,12 @@ import useData from 'Components/Hooks/useData'
 import { ButtonsContainer, Container, NotesContainer } from './Styles'
 
 const Sidebar: FC = () => {
-	const {
-		SetName,
-		SaveNote,
-		MDXEditorRef,
-		Notes,
-		RefreshNotes,
-		LoadNote,
-		Name,
-	} = useData()
+	const { SetName, SaveNote, Notes, RefreshNotes, LoadNote, Name } = useData()
 
 	return (
 		<Container>
 			<ButtonsContainer>
-				<button
-					onClick={() => {
-						const markdown = MDXEditorRef.current?.getMarkdown()
-
-						if (!markdown) return
-
-						SaveNote(markdown)
-					}}
-				>
-					Save
-				</button>
+				<button onClick={SaveNote}>Save</button>
 				<button onClick={() => RefreshNotes()}>Refresh</button>
 				<input
 					onChange={event => SetName(event.target.value)}

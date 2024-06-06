@@ -1,13 +1,5 @@
-import {
-	FC,
-	createContext,
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-} from 'react'
+import { FC, createContext, useCallback, useEffect, useState } from 'react'
 
-import { MDXEditorMethods } from '@mdxeditor/editor'
 import { CreateNote, EditNote, GetNoteByID, GetNotes } from 'Services/Firebase'
 import { Note } from 'Types/Types'
 
@@ -16,42 +8,47 @@ import type { IDataContext, IDataContextProviderProps } from './Types'
 const DataContext = createContext<IDataContext>({} as IDataContext)
 
 export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
-	const [CurrentMarkdown, SetCurrentMarkdown] = useState('# Hello World')
+	const [SavedContent, SetSavedContent] = useState('# Hello World')
+	const [CurrentContent, SetCurrentContent] = useState(SavedContent)
 	const [Name, SetName] = useState('')
 	const [CurrentNoteID, SetCurrentNoteID] = useState<string | null>(null)
 
 	const [Notes, SetNotes] = useState<Note[]>([])
 
+	useEffect(() => {
+		SetCurrentContent(SavedContent)
+	}, [SavedContent])
+
 	const CreateNewNote = useCallback(async () => {
 		const result = await CreateNote({
 			name: Name,
-			content: CurrentMarkdown,
+			content: SavedContent,
 		})
 
 		SetCurrentNoteID(result.id)
-	}, [Name, CurrentMarkdown])
+	}, [Name, SavedContent])
 
-	const SaveNote = useCallback(
-		async (content: string) => {
-			if (Name === '') return alert('Name must not be empty.')
+	const SaveNote = useCallback(async () => {
+		if (Name === '') return alert('Name must not be empty.')
 
-			SetCurrentMarkdown(content)
+		SetSavedContent(CurrentContent)
 
-			if (CurrentNoteID == null) {
-				const result = await CreateNote({ name: Name, content })
-
-				SetCurrentNoteID(result.id)
-
-				return
-			}
-
-			await EditNote(CurrentNoteID, {
+		if (CurrentNoteID == null) {
+			const result = await CreateNote({
 				name: Name,
-				content: CurrentMarkdown,
+				content: CurrentContent,
 			})
-		},
-		[CurrentMarkdown, CurrentNoteID, Name],
-	)
+
+			SetCurrentNoteID(result.id)
+
+			return
+		}
+
+		await EditNote(CurrentNoteID, {
+			name: Name,
+			content: CurrentContent,
+		})
+	}, [CurrentContent, CurrentNoteID, Name])
 
 	const RefreshNotes = useCallback(async () => {
 		SetNotes(await GetNotes())
@@ -62,14 +59,11 @@ export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
 
 		if (!result) return
 
-		MDXEditorRef.current?.setMarkdown(result.content)
-
-		SetCurrentMarkdown(result.content)
+		SetSavedContent(result.content)
+		SetCurrentContent(result.content)
 		SetCurrentNoteID(result.id)
 		SetName(result.name)
 	}, [])
-
-	const MDXEditorRef = useRef<MDXEditorMethods>(null)
 
 	useEffect(() => {
 		RefreshNotes()
@@ -78,9 +72,10 @@ export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
 	return (
 		<DataContext.Provider
 			value={{
-				CurrentMarkdown,
-				SetCurrentMarkdown,
-				MDXEditorRef,
+				SavedContent,
+				SetSavedContent,
+				CurrentContent,
+				SetCurrentContent,
 				Name,
 				SetName,
 				CurrentNoteID,

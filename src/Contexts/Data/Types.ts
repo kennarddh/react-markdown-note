@@ -1,21 +1,21 @@
-import type { Dispatch, ReactNode, RefObject, SetStateAction } from 'react'
+import type { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import { MDXEditorMethods } from '@mdxeditor/editor'
 import { Note } from 'Types/Types'
 
 export type ReactSetState<T> = Dispatch<SetStateAction<T> | T>
 
 export interface IDataContext {
-	CurrentMarkdown: string
-	SetCurrentMarkdown: ReactSetState<string>
+	CurrentContent: string
+	SetCurrentContent: ReactSetState<string>
+	SavedContent: string
+	SetSavedContent: ReactSetState<string>
 	Name: string
 	SetName: ReactSetState<string>
 	CurrentNoteID: string | null
-	MDXEditorRef: RefObject<MDXEditorMethods>
 	Notes: Note[]
 	RefreshNotes: () => void
 	CreateNewNote: () => void
-	SaveNote: (content: string) => void
+	SaveNote: () => void
 	LoadNote: (id: string) => void
 }
 

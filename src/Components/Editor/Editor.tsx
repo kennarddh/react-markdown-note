@@ -1,9 +1,10 @@
-import { FC } from 'react'
+import { FC, useEffect, useRef } from 'react'
 
 import {
 	AdmonitionDirectiveDescriptor,
 	KitchenSinkToolbar,
 	MDXEditor,
+	MDXEditorMethods,
 	SandpackConfig,
 	codeBlockPlugin,
 	codeMirrorPlugin,
@@ -57,12 +58,21 @@ const sandpackConfig: SandpackConfig = {
 }
 
 const Editor: FC = () => {
-	const { CurrentMarkdown, MDXEditorRef } = useData()
+	const { SetCurrentContent, SavedContent } = useData()
+
+	console.log({ SavedContent })
+
+	const MDXEditorRef = useRef<MDXEditorMethods>(null)
+
+	useEffect(() => {
+		MDXEditorRef.current?.setMarkdown(SavedContent)
+	}, [SavedContent])
 
 	return (
 		<Container>
 			<MDXEditor
-				markdown={CurrentMarkdown}
+				markdown={SavedContent}
+				onChange={SetCurrentContent}
 				ref={MDXEditorRef}
 				suppressHtmlProcessing
 				plugins={[
@@ -98,7 +108,7 @@ const Editor: FC = () => {
 					}),
 					diffSourcePlugin({
 						viewMode: 'rich-text',
-						diffMarkdown: CurrentMarkdown,
+						diffMarkdown: SavedContent,
 					}),
 					markdownShortcutPlugin(),
 				]}
