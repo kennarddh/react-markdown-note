@@ -17,6 +17,7 @@ export interface IDataContext {
 	CreateNewNote: () => void
 	SaveNote: () => void
 	LoadNote: (id: string) => void
+	NewNote: () => void
 }
 
 export interface IDataContextProviderProps {

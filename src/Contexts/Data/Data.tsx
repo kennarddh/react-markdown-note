@@ -65,6 +65,14 @@ export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
 		SetName(result.name)
 	}, [])
 
+	const NewNote = useCallback(() => {
+		console.log('New Note')
+		SetSavedContent('# Hello World')
+		SetCurrentContent('# Hello World')
+		SetCurrentNoteID(null)
+		SetName('')
+	}, [])
+
 	useEffect(() => {
 		RefreshNotes()
 	}, [RefreshNotes])
@@ -84,6 +92,7 @@ export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
 				SaveNote,
 				RefreshNotes,
 				LoadNote,
+				NewNote,
 			}}
 		>
 			{children}
