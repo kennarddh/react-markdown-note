@@ -88,6 +88,7 @@ const Editor: FC = () => {
 	const Plugins = useMemo(
 		() => [
 			toolbarPlugin({
+				// Insane lag
 				toolbarContents: () => <KitchenSinkToolbar />,
 			}),
 			listsPlugin(),
