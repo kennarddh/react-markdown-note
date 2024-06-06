@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react'
+import { FC, useCallback, useEffect, useRef, useTransition } from 'react'
 
 import {
 	AdmonitionDirectiveDescriptor,
@@ -58,6 +58,8 @@ const sandpackConfig: SandpackConfig = {
 }
 
 const Editor: FC = () => {
+	const [, StartTransition] = useTransition()
+
 	const { SetCurrentContent, SavedContent, CurrentContent } = useData()
 
 	const MDXEditorRef = useRef<MDXEditorMethods>(null)
@@ -67,11 +69,20 @@ const Editor: FC = () => {
 			MDXEditorRef.current?.setMarkdown(SavedContent)
 	}, [SavedContent, CurrentContent])
 
+	const UpdateCurrentContent = useCallback(
+		(content: string) => {
+			StartTransition(() => {
+				SetCurrentContent(content)
+			})
+		},
+		[SetCurrentContent],
+	)
+
 	return (
 		<Container>
 			<MDXEditor
 				markdown={SavedContent}
-				onChange={SetCurrentContent}
+				onChange={UpdateCurrentContent}
 				ref={MDXEditorRef}
 				suppressHtmlProcessing
 				plugins={[
