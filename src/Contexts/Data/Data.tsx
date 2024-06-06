@@ -19,6 +19,18 @@ export const DataProvider: FC<IDataContextProviderProps> = ({ children }) => {
 		SetCurrentContent(SavedContent)
 	}, [SavedContent])
 
+	useEffect(() => {
+		if (SavedContent === CurrentContent) return
+
+		const onUnload = (event: BeforeUnloadEvent) => {
+			event.preventDefault()
+		}
+
+		window.addEventListener('beforeunload', onUnload)
+
+		return () => window.removeEventListener('beforeunload', onUnload)
+	}, [CurrentContent, SavedContent])
+
 	const CreateNewNote = useCallback(async () => {
 		const result = await CreateNote({
 			name: Name,
